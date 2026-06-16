@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api';
 import SheetTable from '../components/SheetTable.jsx';
@@ -20,6 +20,7 @@ export default function AdminDashboard() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const openSheetRef = useRef(null);
 
   const loadSheets = async (searchTerm = '', tabFilter = 'All') => {
     const query = new URLSearchParams();
@@ -39,6 +40,12 @@ export default function AdminDashboard() {
     setRows(response.data.rows);
     setSheetSearch('');
   };
+
+  useEffect(() => {
+    if (selectedSheet && openSheetRef.current) {
+      openSheetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [selectedSheet]);
 
   const tabOptions = useMemo(
     () => ['All', ...Array.from(new Set(sheets.map((sheet) => sheet.tab || 'General')))],
@@ -200,7 +207,7 @@ export default function AdminDashboard() {
       </section>
 
       {selectedSheet && (
-        <section className="card sheet-open-card" style={{ marginTop: '1.5rem' }}>
+        <section ref={openSheetRef} className="card sheet-open-card" style={{ marginTop: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <div>
               <h2 style={{ margin: 0 }}>Edit Sheet</h2>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api';
 import SheetTable from '../components/SheetTable.jsx';
@@ -13,6 +13,7 @@ export default function UserDashboard() {
   const [sheetSearch, setSheetSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const openSheetRef = useRef(null);
 
   const loadSheets = async (searchTerm = '', tabFilter = 'All') => {
     const query = new URLSearchParams();
@@ -37,6 +38,12 @@ export default function UserDashboard() {
       setError('Failed to load sheet data');
     }
   };
+
+  useEffect(() => {
+    if (selectedSheet && openSheetRef.current) {
+      openSheetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [selectedSheet]);
 
   const tabOptions = ['All', ...Array.from(new Set(sheets.map((sheet) => sheet.tab || 'General')))].filter(Boolean);
 
@@ -124,7 +131,7 @@ export default function UserDashboard() {
       </section>
 
       {selectedSheet && (
-        <section className="card sheet-open-card" style={{ marginTop: '1.5rem' }}>
+        <section ref={openSheetRef} className="card sheet-open-card" style={{ marginTop: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <h2 style={{ marginTop: 0, flex: 1 }}>{selectedSheet.title}</h2>
             <div style={{ minWidth: '18rem' }}>
