@@ -90,12 +90,13 @@ export default function AdminSheetPage() {
     <main className="container" style={{ padding: '2rem 0 3rem' }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
         <div>
-          <h1 style={{ margin: 0 }}>Admin Sheet</h1>
+          <h1 style={{ margin: 0 }}>{user.name}</h1>
           <p style={{ margin: '0.4rem 0 0', color: 'var(--muted)' }}>
-            Signed in as {user.email}
+            Admin · {user.email}
           </p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <Link to="/admin/profile" className="btn btn-secondary">Profile & Users</Link>
           <Link to="/admin" className="btn btn-secondary">Back to dashboard</Link>
           <button className="btn btn-danger" onClick={logout}>Logout</button>
         </div>

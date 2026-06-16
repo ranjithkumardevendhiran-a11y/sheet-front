@@ -7,18 +7,14 @@ import { LogoBadge } from '../components/AppHeader.jsx';
 export default function UserLogin() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [mode, setMode] = useState('login');
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (event) => {
     event.preventDefault();
     setError('');
-    setSuccess('');
     setLoading(true);
 
     try {
@@ -26,24 +22,6 @@ export default function UserLogin() {
       navigate('/user');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRegister = async (event) => {
-    event.preventDefault();
-    setError('');
-    setSuccess('');
-    setLoading(true);
-
-    try {
-      await api.post('/auth/register-user', { name, email, password });
-      setSuccess('Account created. You can sign in now.');
-      setMode('login');
-      setPassword('');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -61,35 +39,7 @@ export default function UserLogin() {
           Sign in to view sheet data in read-only mode.
         </p>
 
-        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-          <button
-            type="button"
-            className={`btn ${mode === 'login' ? 'btn-user' : 'btn-secondary'}`}
-            onClick={() => setMode('login')}
-          >
-            Login
-          </button>
-          <button
-            type="button"
-            className={`btn ${mode === 'register' ? 'btn-user' : 'btn-secondary'}`}
-            onClick={() => setMode('register')}
-          >
-            Register
-          </button>
-        </div>
-
-        <form onSubmit={mode === 'login' ? handleLogin : handleRegister}>
-          {mode === 'register' && (
-            <div className="field">
-              <label htmlFor="user-name">Full name</label>
-              <input
-                id="user-name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </div>
-          )}
+        <form onSubmit={handleLogin}>
           <div className="field">
             <label htmlFor="user-email">Email</label>
             <input
@@ -112,9 +62,8 @@ export default function UserLogin() {
             />
           </div>
           {error && <p className="error">{error}</p>}
-          {success && <p className="success">{success}</p>}
           <button className="btn btn-user" type="submit" disabled={loading} style={{ width: '100%' }}>
-            {loading ? 'Please wait...' : mode === 'login' ? 'Sign in as Agent' : 'Create Agent Account'}
+            {loading ? 'Please wait...' : 'Sign in as Agent'}
           </button>
         </form>
 
