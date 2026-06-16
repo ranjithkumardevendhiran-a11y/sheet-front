@@ -47,6 +47,8 @@ export default function AdminDashboard() {
           </div>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <Link to="/admin/profile" className="btn btn-admin">Register Agent</Link>
+          <Link to="/admin/profile" className="btn btn-secondary">Profile</Link>
           <Link to="/" className="btn btn-secondary">Home</Link>
           <button className="btn btn-danger" onClick={logout}>Logout</button>
         </div>

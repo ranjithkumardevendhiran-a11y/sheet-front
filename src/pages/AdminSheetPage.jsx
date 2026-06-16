@@ -93,7 +93,7 @@ export default function AdminSheetPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <LogoBadge small />
           <div>
-            <h1 style={{ margin: 0 }}>{user.name}</h1>
+            <h1 style={{ margin: 0 }}>{user?.name || 'Ranjith'}</h1>
             <p style={{ margin: '0.4rem 0 0', color: 'var(--muted)' }}>
               Admin · {user.email}
             </p>

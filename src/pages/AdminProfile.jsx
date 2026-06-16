@@ -38,7 +38,7 @@ export default function AdminProfile() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <LogoBadge small />
           <div>
-            <h1 style={{ margin: 0 }}>{user?.name}</h1>
+            <h1 style={{ margin: 0 }}>{user?.name || 'Ranjith'}</h1>
             <p style={{ color: 'var(--muted)', margin: '0.5rem 0 0' }}>Admin Profile · {user?.email}</p>
           </div>
         </div>
@@ -50,7 +50,7 @@ export default function AdminProfile() {
           <h2>Your Information</h2>
           <div className="field">
             <label>Name</label>
-            <input value={user?.name} disabled />
+            <input value={user?.name || 'Ranjith'} disabled />
           </div>
           <div className="field">
             <label>Email</label>
