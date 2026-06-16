@@ -100,6 +100,7 @@ export default function AdminSheetPage() {
           </div>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <Link to="/admin/profile" className="btn btn-admin">Register Agent</Link>
           <Link to="/admin/profile" className="btn btn-secondary">Profile & Users</Link>
           <Link to="/admin" className="btn btn-secondary">Back to dashboard</Link>
           <button className="btn btn-danger" onClick={logout}>Logout</button>
