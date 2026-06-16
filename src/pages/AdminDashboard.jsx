@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../api';
 import UploadSheet from '../components/UploadSheet.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
+import { LogoBadge } from '../components/AppHeader.jsx';
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -36,11 +37,14 @@ export default function AdminDashboard() {
   return (
     <main className="container" style={{ padding: '2rem 0 3rem' }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
-        <div>
-          <h1 style={{ margin: 0 }}>Admin Dashboard</h1>
-          <p style={{ margin: '0.4rem 0 0', color: 'var(--muted)' }}>
-            Signed in as {user.email}
-          </p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <LogoBadge small />
+          <div>
+            <h1 style={{ margin: 0 }}>{user?.name || 'Ranjith'}</h1>
+            <p style={{ margin: '0.4rem 0 0', color: 'var(--muted)' }}>
+              Admin Dashboard · {user.email}
+            </p>
+          </div>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <Link to="/" className="btn btn-secondary">Home</Link>
