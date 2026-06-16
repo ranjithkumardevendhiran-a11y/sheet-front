@@ -1,16 +1,17 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import api from '../api';
 import { useAuth } from '../context/AuthContext.jsx';
 import { LogoBadge } from '../components/AppHeader.jsx';
 
 export default function AdminProfile() {
   const { user } = useAuth();
+  const location = useLocation();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(location.state?.showRegistration || false);
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
