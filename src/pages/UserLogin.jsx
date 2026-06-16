@@ -54,8 +54,8 @@ export default function UserLogin() {
       <section className="card" style={{ maxWidth: 460, margin: '0 auto' }}>
         <LogoBadge small />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
-          <h1 style={{ margin: 0 }}>User Login</h1>
-          <span className="badge badge-user">User</span>
+          <h1 style={{ margin: 0 }}>Agent Login</h1>
+          <span className="badge badge-user">Agent</span>
         </div>
         <p style={{ color: 'var(--muted)' }}>
           Sign in to view sheet data in read-only mode.
@@ -114,7 +114,7 @@ export default function UserLogin() {
           {error && <p className="error">{error}</p>}
           {success && <p className="success">{success}</p>}
           <button className="btn btn-user" type="submit" disabled={loading} style={{ width: '100%' }}>
-            {loading ? 'Please wait...' : mode === 'login' ? 'Sign in as User' : 'Create User Account'}
+            {loading ? 'Please wait...' : mode === 'login' ? 'Sign in as Agent' : 'Create Agent Account'}
           </button>
         </form>
 

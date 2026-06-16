@@ -71,7 +71,7 @@ export default function AdminLogin() {
           Default admin: <strong>{DEFAULT_ADMIN_EMAIL}</strong>
         </p>
         <p style={{ marginTop: '1rem' }}>
-          <Link to="/">Back to home</Link> · <Link to="/user/login">User login</Link>
+          <Link to="/">Back to home</Link> · <Link to="/user/login">Agent login</Link>
         </p>
       </section>
     </main>

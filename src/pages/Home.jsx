@@ -28,7 +28,7 @@ export default function Home() {
               Admin Login
             </Link>
             <Link to="/user/login" className="btn btn-user" style={{ display: 'block' }}>
-              User Login
+              Agent Login
             </Link>
           </div>
         )}
