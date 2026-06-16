@@ -20,6 +20,7 @@ export default function AdminDashboard() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [shouldScrollToOpenedSheet, setShouldScrollToOpenedSheet] = useState(false);
   const openSheetRef = useRef(null);
 
   const loadSheets = async (searchTerm = '', tabFilter = 'All') => {
@@ -39,13 +40,18 @@ export default function AdminDashboard() {
     setHeaders(response.data.headers);
     setRows(response.data.rows);
     setSheetSearch('');
+    setShouldScrollToOpenedSheet(true);
   };
 
   useEffect(() => {
-    if (selectedSheet && openSheetRef.current) {
+    if (!selectedSheet || !shouldScrollToOpenedSheet) return;
+    if (!openSheetRef.current) return;
+
+    window.requestAnimationFrame(() => {
       openSheetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [selectedSheet]);
+      setShouldScrollToOpenedSheet(false);
+    });
+  }, [selectedSheet, shouldScrollToOpenedSheet]);
 
   const tabOptions = useMemo(
     () => ['All', ...Array.from(new Set(sheets.map((sheet) => sheet.tab || 'General')))],

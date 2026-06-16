@@ -13,6 +13,7 @@ export default function UserDashboard() {
   const [sheetSearch, setSheetSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [shouldScrollToOpenedSheet, setShouldScrollToOpenedSheet] = useState(false);
   const openSheetRef = useRef(null);
 
   const loadSheets = async (searchTerm = '', tabFilter = 'All') => {
@@ -34,16 +35,21 @@ export default function UserDashboard() {
       const response = await api.get(`/sheets/${sheetId}`);
       setSelectedSheet(response.data);
       setSheetSearch('');
+      setShouldScrollToOpenedSheet(true);
     } catch {
       setError('Failed to load sheet data');
     }
   };
 
   useEffect(() => {
-    if (selectedSheet && openSheetRef.current) {
+    if (!selectedSheet || !shouldScrollToOpenedSheet) return;
+    if (!openSheetRef.current) return;
+
+    window.requestAnimationFrame(() => {
       openSheetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [selectedSheet]);
+      setShouldScrollToOpenedSheet(false);
+    });
+  }, [selectedSheet, shouldScrollToOpenedSheet]);
 
   const tabOptions = ['All', ...Array.from(new Set(sheets.map((sheet) => sheet.tab || 'General')))].filter(Boolean);
 
