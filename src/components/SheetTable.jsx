@@ -1,14 +1,22 @@
 import { useMemo } from 'react';
 
-export default function SheetTable({ headers, rows, searchQuery = '', editable = false, onCellChange, onAddRow, onDeleteRow }) {
-  const filteredRows = useMemo(() => {
-    if (!searchQuery?.trim()) return rows;
+export default function SheetTable({ headers, headerStyles = [], rows, rowStyles = [], searchQuery = '', editable = false, onCellChange, onAddRow, onDeleteRow }) {
+  const filtered = useMemo(() => {
+    if (!searchQuery?.trim()) {
+      return rows.map((row, rowIndex) => ({ row, styleRow: rowStyles[rowIndex] || [] }));
+    }
 
     const query = searchQuery.trim().toLowerCase();
-    return rows.filter((row) =>
-      row.some((cell) => String(cell ?? '').toLowerCase().includes(query))
-    );
-  }, [rows, searchQuery]);
+    return rows.reduce((acc, row, rowIndex) => {
+      if (row.some((cell) => String(cell ?? '').toLowerCase().includes(query))) {
+        acc.push({ row, styleRow: rowStyles[rowIndex] || [] });
+      }
+      return acc;
+    }, []);
+  }, [rows, rowStyles, searchQuery]);
+
+  const filteredRows = filtered.map((item) => item.row);
+  const filteredRowStyles = filtered.map((item) => item.styleRow);
 
   return (
     <div>
@@ -23,7 +31,7 @@ export default function SheetTable({ headers, rows, searchQuery = '', editable =
             <tr>
               {editable && <th style={{ width: 60 }}>#</th>}
               {headers.map((header, index) => (
-                <th key={`header-${index}`}>{header}</th>
+                <th key={`header-${index}`} style={headerStyles[index] || {}}>{header}</th>
               ))}
               {editable && <th style={{ width: 90 }}>Actions</th>}
             </tr>
@@ -40,7 +48,7 @@ export default function SheetTable({ headers, rows, searchQuery = '', editable =
                 <tr key={`row-${rowIndex}`}>
                   {editable && <td>{rowIndex + 1}</td>}
                   {headers.map((_, colIndex) => (
-                    <td key={`cell-${rowIndex}-${colIndex}`}>
+                    <td key={`cell-${rowIndex}-${colIndex}`} style={filteredRowStyles[rowIndex]?.[colIndex] || {}}>
                       {editable ? (
                         <input
                           value={row[colIndex] ?? ''}

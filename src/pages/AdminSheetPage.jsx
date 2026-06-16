@@ -141,7 +141,9 @@ export default function AdminSheetPage() {
 
             <SheetTable
               headers={headers}
+              headerStyles={sheet.headerStyles}
               rows={rows}
+              rowStyles={sheet.rowStyles}
               searchQuery={sheetSearch}
               editable
               onCellChange={handleCellChange}

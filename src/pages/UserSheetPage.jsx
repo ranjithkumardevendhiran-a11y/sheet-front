@@ -65,7 +65,9 @@ export default function UserSheetPage() {
 
             <SheetTable
               headers={sheet.headers}
+              headerStyles={sheet.headerStyles}
               rows={sheet.rows}
+              rowStyles={sheet.rowStyles}
               searchQuery={sheetSearch}
               editable={false}
             />
