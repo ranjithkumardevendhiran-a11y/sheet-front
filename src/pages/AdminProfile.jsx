@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api';
 import { useAuth } from '../context/AuthContext.jsx';
+import { LogoBadge } from '../components/AppHeader.jsx';
 
 export default function AdminProfile() {
   const { user } = useAuth();
@@ -34,9 +35,12 @@ export default function AdminProfile() {
   return (
     <main className="container" style={{ padding: '2rem 0' }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <div>
-          <h1 style={{ margin: 0 }}>Admin Profile</h1>
-          <p style={{ color: 'var(--muted)', margin: '0.5rem 0 0' }}>Manage your account and agents</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <LogoBadge small />
+          <div>
+            <h1 style={{ margin: 0 }}>{user?.name}</h1>
+            <p style={{ color: 'var(--muted)', margin: '0.5rem 0 0' }}>Admin Profile · {user?.email}</p>
+          </div>
         </div>
         <Link to="/admin" className="btn btn-secondary">Back to Dashboard</Link>
       </header>
