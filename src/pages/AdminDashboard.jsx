@@ -1,27 +1,17 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api';
-import SheetTable from '../components/SheetTable.jsx';
 import UploadSheet from '../components/UploadSheet.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [sheets, setSheets] = useState([]);
-  const [selectedSheet, setSelectedSheet] = useState(null);
-  const [headers, setHeaders] = useState([]);
-  const [rows, setRows] = useState([]);
-  const [title, setTitle] = useState('');
   const [selectedTab, setSelectedTab] = useState('All');
   const [search, setSearch] = useState('');
-  const [sheetSearch, setSheetSearch] = useState('');
-  const [tab, setTab] = useState('General');
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const [shouldScrollToOpenedSheet, setShouldScrollToOpenedSheet] = useState(false);
-  const openSheetRef = useRef(null);
 
   const loadSheets = async (searchTerm = '', tabFilter = 'All') => {
     const query = new URLSearchParams();
@@ -31,27 +21,6 @@ export default function AdminDashboard() {
     const response = await api.get(`/sheets?${query.toString()}`);
     setSheets(response.data);
   };
-
-  const loadSheet = async (sheetId) => {
-    const response = await api.get(`/sheets/${sheetId}`);
-    setSelectedSheet(response.data);
-    setTitle(response.data.title);
-    setTab(response.data.tab || 'General');
-    setHeaders(response.data.headers);
-    setRows(response.data.rows);
-    setSheetSearch('');
-    setShouldScrollToOpenedSheet(true);
-  };
-
-  useEffect(() => {
-    if (!selectedSheet || !shouldScrollToOpenedSheet) return;
-    if (!openSheetRef.current) return;
-
-    window.requestAnimationFrame(() => {
-      openSheetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setShouldScrollToOpenedSheet(false);
-    });
-  }, [selectedSheet, shouldScrollToOpenedSheet]);
 
   const tabOptions = useMemo(
     () => ['All', ...Array.from(new Set(sheets.map((sheet) => sheet.tab || 'General')))],
@@ -63,63 +32,6 @@ export default function AdminDashboard() {
       .catch(() => setError('Failed to load sheets'))
       .finally(() => setLoading(false));
   }, []);
-
-  const handleCellChange = (rowIndex, colIndex, value) => {
-    setRows((current) =>
-      current.map((row, index) =>
-        index === rowIndex ? row.map((cell, cellIndex) => (cellIndex === colIndex ? value : cell)) : row
-      )
-    );
-  };
-
-  const handleAddRow = () => {
-    setRows((current) => [...current, headers.map(() => '')]);
-  };
-
-  const handleDeleteRow = (rowIndex) => {
-    setRows((current) => current.filter((_, index) => index !== rowIndex));
-  };
-
-  const handleSave = async () => {
-    if (!selectedSheet) return;
-
-    setSaving(true);
-    setMessage('');
-    setError('');
-
-    try {
-      const response = await api.put(`/sheets/${selectedSheet._id}`, {
-        title: title.trim() || selectedSheet.title,
-        tab: tab.trim() || 'General',
-        headers,
-        rows,
-      });
-      setSelectedSheet(response.data);
-      setMessage('Sheet saved successfully');
-      await loadSheets(search, selectedTab);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save sheet');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleDeleteSheet = async () => {
-    if (!selectedSheet) return;
-    if (!window.confirm('Delete this sheet permanently?')) return;
-
-    try {
-      await api.delete(`/sheets/${selectedSheet._id}`);
-      setSelectedSheet(null);
-      setHeaders([]);
-      setRows([]);
-      setTitle('');
-      await loadSheets();
-      setMessage('Sheet deleted');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to delete sheet');
-    }
-  };
 
   return (
     <main className="container" style={{ padding: '2rem 0 3rem' }}>
@@ -137,9 +49,9 @@ export default function AdminDashboard() {
       </header>
 
       <UploadSheet
-        onUploaded={async (sheet) => {
-          await loadSheets();
-          await loadSheet(sheet._id);
+        onUploaded={(sheet) => {
+          loadSheets();
+          navigate(`/admin/sheet/${sheet._id}`);
         }}
       />
 
@@ -198,9 +110,9 @@ export default function AdminDashboard() {
                 className="btn btn-secondary"
                 style={{
                   textAlign: 'left',
-                  border: selectedSheet?._id === sheet._id ? '2px solid var(--admin)' : '1px solid var(--border)',
+                  border: '1px solid var(--border)',
                 }}
-                onClick={() => loadSheet(sheet._id)}
+                onClick={() => navigate(`/admin/sheet/${sheet._id}`)}
               >
                 <strong>{sheet.title}</strong>
                 <div style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: '0.25rem' }}>
@@ -212,53 +124,6 @@ export default function AdminDashboard() {
         )}
       </section>
 
-      {selectedSheet && (
-        <section ref={openSheetRef} className="card sheet-open-card" style={{ marginTop: '1.5rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-            <div>
-              <h2 style={{ margin: 0 }}>Edit Sheet</h2>
-              <span className="badge badge-admin" style={{ marginTop: '0.5rem' }}>Admin Edit Mode</span>
-            </div>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button className="btn btn-admin" onClick={handleSave} disabled={saving}>
-                {saving ? 'Saving...' : 'Save Changes'}
-              </button>
-              <button className="btn btn-danger" onClick={handleDeleteSheet}>Delete Sheet</button>
-            </div>
-          </div>
-
-          <div className="field" style={{ marginTop: '1rem' }}>
-            <label htmlFor="edit-title">Sheet title</label>
-            <input id="edit-title" value={title} onChange={(e) => setTitle(e.target.value)} />
-          </div>
-          <div className="field">
-            <label htmlFor="edit-tab">Sheet tab</label>
-            <input id="edit-tab" value={tab} onChange={(e) => setTab(e.target.value)} />
-          </div>
-          <div className="field">
-            <label htmlFor="sheet-search">Search within sheet</label>
-            <input
-              id="sheet-search"
-              value={sheetSearch}
-              onChange={(e) => setSheetSearch(e.target.value)}
-              placeholder="Search rows in this sheet"
-            />
-          </div>
-
-          <SheetTable
-            headers={headers}
-            rows={rows}
-            searchQuery={sheetSearch}
-            editable
-            onCellChange={handleCellChange}
-            onAddRow={handleAddRow}
-            onDeleteRow={handleDeleteRow}
-          />
-
-          {message && <p className="success">{message}</p>}
-          {error && <p className="error">{error}</p>}
-        </section>
-      )}
     </main>
   );
 }

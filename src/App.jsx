@@ -6,6 +6,8 @@ import AdminLogin from './pages/AdminLogin.jsx';
 import UserLogin from './pages/UserLogin.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import UserDashboard from './pages/UserDashboard.jsx';
+import AdminSheetPage from './pages/AdminSheetPage.jsx';
+import UserSheetPage from './pages/UserSheetPage.jsx';
 
 function ProtectedRoute({ children, role }) {
   const { user, loading } = useAuth();
@@ -43,10 +45,26 @@ export default function App() {
             }
           />
           <Route
+            path="/admin/sheet/:sheetId"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminSheetPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/user"
             element={
               <ProtectedRoute role="user">
                 <UserDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/user/sheet/:sheetId"
+            element={
+              <ProtectedRoute role="user">
+                <UserSheetPage />
               </ProtectedRoute>
             }
           />

@@ -1,20 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api';
-import SheetTable from '../components/SheetTable.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 
 export default function UserDashboard() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [sheets, setSheets] = useState([]);
-  const [selectedSheet, setSelectedSheet] = useState(null);
   const [selectedTab, setSelectedTab] = useState('All');
   const [search, setSearch] = useState('');
-  const [sheetSearch, setSheetSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [shouldScrollToOpenedSheet, setShouldScrollToOpenedSheet] = useState(false);
-  const openSheetRef = useRef(null);
 
   const loadSheets = async (searchTerm = '', tabFilter = 'All') => {
     const query = new URLSearchParams();
@@ -29,27 +25,6 @@ export default function UserDashboard() {
       .catch(() => setError('Failed to load sheets'))
       .finally(() => setLoading(false));
   }, []);
-
-  const openSheet = async (sheetId) => {
-    try {
-      const response = await api.get(`/sheets/${sheetId}`);
-      setSelectedSheet(response.data);
-      setSheetSearch('');
-      setShouldScrollToOpenedSheet(true);
-    } catch {
-      setError('Failed to load sheet data');
-    }
-  };
-
-  useEffect(() => {
-    if (!selectedSheet || !shouldScrollToOpenedSheet) return;
-    if (!openSheetRef.current) return;
-
-    window.requestAnimationFrame(() => {
-      openSheetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setShouldScrollToOpenedSheet(false);
-    });
-  }, [selectedSheet, shouldScrollToOpenedSheet]);
 
   const tabOptions = ['All', ...Array.from(new Set(sheets.map((sheet) => sheet.tab || 'General')))].filter(Boolean);
 
@@ -119,12 +94,9 @@ export default function UserDashboard() {
                 className="btn btn-secondary"
                 style={{
                   textAlign: 'left',
-                  border: selectedSheet?._id === sheet._id ? '2px solid var(--user)' : '1px solid var(--border)',
+                  border: '1px solid var(--border)',
                 }}
-                onClick={() => {
-                  openSheet(sheet._id);
-                  setSheetSearch('');
-                }}
+                onClick={() => navigate(`/user/sheet/${sheet._id}`)}
               >
                 <strong>{sheet.title}</strong>
                 <div style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: '0.25rem' }}>
@@ -135,29 +107,6 @@ export default function UserDashboard() {
           </div>
         )}
       </section>
-
-      {selectedSheet && (
-        <section ref={openSheetRef} className="card sheet-open-card" style={{ marginTop: '1.5rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-            <h2 style={{ marginTop: 0, flex: 1 }}>{selectedSheet.title}</h2>
-            <div style={{ minWidth: '18rem' }}>
-              <input
-                value={sheetSearch}
-                onChange={(e) => setSheetSearch(e.target.value)}
-                placeholder="Search within sheet..."
-                className="field-input"
-                style={{ width: '100%' }}
-              />
-            </div>
-          </div>
-          <SheetTable
-            headers={selectedSheet.headers}
-            rows={selectedSheet.rows}
-            searchQuery={sheetSearch}
-            editable={false}
-          />
-        </section>
-      )}
 
       {error && <p className="error">{error}</p>}
     </main>
