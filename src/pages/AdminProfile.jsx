@@ -10,6 +10,7 @@ export default function AdminProfile() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showForm, setShowForm] = useState(false);
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -63,47 +64,63 @@ export default function AdminProfile() {
         </section>
 
         <section className="card">
-          <h2>Register New Agent</h2>
-          <p style={{ color: 'var(--muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-            Agents created here will have read-only access to sheets.
-          </p>
-          <form onSubmit={handleRegisterAgent}>
-            <div className="field">
-              <label htmlFor="reg-name">Full Name</label>
-              <input
-                id="reg-name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
+          {!showForm ? (
+            <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
+              <h2>Agent Management</h2>
+              <p style={{ color: 'var(--muted)', marginBottom: '1.5rem' }}>
+                Add new agents to provide read-only access to sheet data.
+              </p>
+              <button className="btn btn-admin" onClick={() => setShowForm(true)}>
+                Create Agent Account
+              </button>
             </div>
-            <div className="field">
-              <label htmlFor="reg-email">Email Address</label>
-              <input
-                id="reg-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="reg-pass">Password</label>
-              <input
-                id="reg-pass"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-              />
-            </div>
-            {error && <p className="error">{error}</p>}
-            {success && <p className="success">{success}</p>}
-            <button className="btn btn-admin" type="submit" disabled={loading} style={{ width: '100%' }}>
-              {loading ? 'Registering...' : 'Create Agent Account'}
-            </button>
-          </form>
+          ) : (
+            <>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h2 style={{ margin: 0 }}>Register New Agent</h2>
+                <button className="btn btn-secondary" style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem' }} onClick={() => setShowForm(false)}>
+                  Cancel
+                </button>
+              </div>
+              <form onSubmit={handleRegisterAgent}>
+                <div className="field">
+                  <label htmlFor="reg-name">Full Name</label>
+                  <input
+                    id="reg-name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="reg-email">Email Address</label>
+                  <input
+                    id="reg-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="reg-pass">Password</label>
+                  <input
+                    id="reg-pass"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={6}
+                  />
+                </div>
+                {error && <p className="error">{error}</p>}
+                {success && <p className="success">{success}</p>}
+                <button className="btn btn-admin" type="submit" disabled={loading} style={{ width: '100%' }}>
+                  {loading ? 'Registering...' : 'Create Agent Account'}
+                </button>
+              </form>
+            </>
+          )}
         </section>
       </div>
     </main>
