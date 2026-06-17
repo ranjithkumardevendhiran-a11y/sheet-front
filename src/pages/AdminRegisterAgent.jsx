@@ -1,0 +1,96 @@
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../api';
+import { useAuth } from '../context/AuthContext.jsx';
+import { LogoBadge } from '../components/AppHeader.jsx';
+
+export default function AdminRegisterAgent() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleRegisterAgent = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    setLoading(true);
+
+    try {
+      await api.post('/auth/register-user', { name, email, password });
+      setSuccess(`Agent ${name} registered successfully.`);
+      setName('');
+      setEmail('');
+      setPassword('');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to register agent');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <main className="container" style={{ padding: '2rem 0' }}>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <LogoBadge small />
+          <div>
+            <h1 style={{ margin: 0 }}>Register Agent</h1>
+            <p style={{ color: 'var(--muted)', margin: '0.5rem 0 0' }}>Admin Dashboard · {user?.email}</p>
+          </div>
+        </div>
+        <Link to="/admin" className="btn btn-secondary">Back to Dashboard</Link>
+      </header>
+
+      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <section className="card">
+          <h2 style={{ marginBottom: '1.5rem' }}>Register New Agent</h2>
+          <p style={{ color: 'var(--muted)', marginBottom: '1.5rem' }}>
+            Fill in the details below to create a new agent account with read-only access.
+          </p>
+          <form onSubmit={handleRegisterAgent}>
+            <div className="field">
+              <label htmlFor="reg-name">Full Name</label>
+              <input
+                id="reg-name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="reg-email">Email Address</label>
+              <input
+                id="reg-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="reg-pass">Password</label>
+              <input
+                id="reg-pass"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+              />
+            </div>
+            {error && <p className="error">{error}</p>}
+            {success && <p className="success">{success}</p>}
+            <button className="btn btn-admin" type="submit" disabled={loading} style={{ width: '100%' }}>
+              {loading ? 'Registering...' : 'Create Agent Account'}
+            </button>
+          </form>
+        </section>
+      </div>
+    </main>
+  );
+}
