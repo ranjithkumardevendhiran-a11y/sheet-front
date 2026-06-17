@@ -8,6 +8,8 @@ import AdminDashboard from './pages/AdminDashboard.jsx';
 import UserDashboard from './pages/UserDashboard.jsx';
 import AdminSheetPage from './pages/AdminSheetPage.jsx';
 import UserSheetPage from './pages/UserSheetPage.jsx';
+import AdminRegisterAgent from './pages/AdminRegisterAgent.jsx';
+import AdminProfile from './pages/AdminProfile.jsx';
 
 function ProtectedRoute({ children, role }) {
   const { user, loading } = useAuth();
@@ -49,6 +51,22 @@ export default function App() {
             element={
               <ProtectedRoute role="admin">
                 <AdminSheetPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/register"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminRegisterAgent />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/profile"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminProfile />
               </ProtectedRoute>
             }
           />

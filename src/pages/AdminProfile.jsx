@@ -42,7 +42,7 @@ export default function AdminProfile() {
               Add new agents to provide read-only access to sheet data.
             </p>
             <Link to="/admin/register" className="btn btn-admin">
-              Create Agent Account
+              Register
             </Link>
           </div>
         </section>
