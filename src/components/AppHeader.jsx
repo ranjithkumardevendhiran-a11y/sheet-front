@@ -1,7 +1,7 @@
 export function LogoBadge({ small = false }) {
   return (
     <div className={`logo-badge${small ? ' logo-badge-small' : ''}`}>
-      <img src="/image1.png" alt="myTVS" style={{ height: small ? 30 : 50 }} />
+      <img src="/image1.png" alt="myTVS" style={{ height: small ? 50 : 80 }} />
     </div>
   );
 }
