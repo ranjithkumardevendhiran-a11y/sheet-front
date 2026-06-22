@@ -28,7 +28,16 @@ export default function UserLogin() {
   };
 
   return (
-    <main className="container" style={{ padding: '4rem 0' }}>
+    <main
+      className="container"
+      style={{
+        padding: '4rem 0',
+        backgroundImage: 'url(/image1.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        minHeight: '100vh',
+      }}
+    >
       <section className="card" style={{ maxWidth: 460, margin: '0 auto' }}>
         <LogoBadge small />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
