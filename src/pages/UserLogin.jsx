@@ -32,7 +32,7 @@ export default function UserLogin() {
       className="container"
       style={{
         padding: '4rem 0',
-        backgroundImage: 'url(/image1.png)',
+        backgroundImage: 'url(/image.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         minHeight: '100vh',
