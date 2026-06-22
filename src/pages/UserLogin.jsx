@@ -29,7 +29,6 @@ export default function UserLogin() {
 
   return (
     <main
-      className="container"
       style={{
         padding: '4rem 0',
         backgroundImage: 'url(/image.png)',
@@ -38,7 +37,7 @@ export default function UserLogin() {
         minHeight: '100vh',
       }}
     >
-      <section className="card" style={{ maxWidth: 460, margin: '0 auto' }}>
+      <section className="container card" style={{ maxWidth: 460, margin: '0 auto' }}>
         <LogoBadge small />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
           <h1 style={{ margin: 0 }}>Agent Login</h1>
