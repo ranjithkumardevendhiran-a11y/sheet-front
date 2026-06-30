@@ -14,7 +14,7 @@ export default function UploadSheet({ onUploaded }) {
   const handleFileUpload = async (event) => {
     event.preventDefault();
     if (!file) {
-      setError('Please choose a CSV or Excel file');
+      setError('Please choose a CSV, Excel, or Word file');
       return;
     }
 
@@ -76,7 +76,7 @@ export default function UploadSheet({ onUploaded }) {
     <section className="card">
       <h2 style={{ marginTop: 0 }}>Upload Sheet</h2>
       <p style={{ color: 'var(--muted)' }}>
-        Upload an exported CSV/Excel file from Google Sheets, or import directly using a public Google Sheet URL.
+        Upload a CSV, Excel, or Word file, or import directly using a public Google Sheet URL.
       </p>
 
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
@@ -118,11 +118,11 @@ export default function UploadSheet({ onUploaded }) {
       {mode === 'file' ? (
         <form onSubmit={handleFileUpload}>
           <div className="field">
-            <label htmlFor="sheet-file">CSV or Excel file</label>
+            <label htmlFor="sheet-file">CSV, Excel, or Word file</label>
             <input
               id="sheet-file"
               type="file"
-              accept=".csv,.xls,.xlsx"
+              accept=".csv,.xls,.xlsx,.doc,.docx"
               onChange={(e) => setFile(e.target.files?.[0] || null)}
               required
             />
